@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Complaints Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="mx-4 sm:w-full sm:max-w-2xl p-8 bg-white rounded-lg shadow-lg">
+        <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Manage Complaints</h2>
+
+        <!-- Centering the button -->
+        <div class="flex justify-center mb-4">
+            <button id="viewComplaints" class="py-2 px-4 bg-blue-500 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 transition duration-200">
+                View All Complaints
+            </button>
+        </div>
+
+        <!-- Complaint List -->
+        <div id="complaintList" class="space-y-4">
+            <!-- Dynamic complaint items will be injected here -->
+        </div>
+    </div>
+    <script src="admin-complaints.js"></script> <!-- Link to the JS file -->
+</body>
+</html>
+

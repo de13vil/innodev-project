@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-indigo-100">
+    <div class="text-center p-8 bg-white rounded-lg shadow-2xl transform transition duration-300 hover:scale-105">
+        <!-- Dashboard Icon and Title -->
+        <div class="flex items-center justify-center mb-6">
+            <svg class="w-12 h-12 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            <h1 class="ml-3 text-4xl font-bold text-gray-800">User Dashboard</h1>
+        </div>
+        
+        <p class="text-gray-600 text-lg">View and manage your complaints here.</p>
+
+        <!-- View My Complaints Button -->
+        <button id="viewComplaints" class="mt-6 inline-block rounded-lg bg-indigo-600 text-white px-4 py-2 text-lg font-semibold shadow-lg hover:bg-indigo-700 transform transition duration-200 hover:shadow-xl hover:scale-105">
+            View My Complaints
+        </button>
+
+        <!-- Complaint List -->
+        <div id="complaintList" class="mt-6"></div>
+        
+        <!-- Complaint Submission Form -->
+        <div class="mt-6 p-4 bg-gray-50 rounded-md shadow">
+            <h2 class="text-xl font-semibold text-gray-800">Submit a New Complaint</h2>
+            <form id="complaintForm" class="mt-4">
+                <select id="issueType" class="w-full p-2 border rounded-md">
+                    <option value="">Select Issue Type</option>
+                    <option value="Technical">Technical</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Other">Other</option>
+                </select>
+                <textarea id="description" class="w-full mt-2 p-2 border rounded-md" rows="3" placeholder="Describe your issue..."></textarea>
+                <button type="submit" class="mt-4 w-full rounded-lg bg-indigo-600 text-white px-4 py-2 font-semibold shadow-lg hover:bg-indigo-700 transform transition duration-200 hover:shadow-xl hover:scale-105">
+                    Submit Complaint
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript code for handling complaint submission and fetching complaints
+        document.getElementById('complaintForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const issueType = document.getElementById('issueType').value;
+            const description = document.getElementById('description').value;
+
+            fetch('/submit-complaint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ type: issueType, description: description })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Complaint submitted successfully!');
+                    document.getElementById('complaintForm').reset();
+                } else {
+                    alert('Error submitting complaint. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            });
+        });
+
+        document.getElementById('viewComplaints').addEventListener('click', function() {
+            fetch('/api/user-complaints')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(complaints => {
+                const complaintList = document.getElementById('complaintList');
+                complaintList.innerHTML = '';
+                if (complaints.length === 0) {
+                    complaintList.innerHTML = '<p class="text-gray-600">No complaints found.</p>';
+                    return;
+                }
+
+                complaints.forEach(complaint => {
+                    const complaintDiv = document.createElement('div');
+                    complaintDiv.classList.add('p-4', 'border', 'border-gray-300', 'rounded-md', 'mt-2');
+                    complaintDiv.innerHTML = `
+                        <strong>Type:</strong> ${complaint.type}<br>
+                        <strong>Description:</strong> ${complaint.description}<br>
+                        <strong>Status:</strong> ${complaint.status}
+                    `;
+                    complaintList.appendChild(complaintDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching complaints:', error);
+                alert('An error occurred while fetching complaints. Please try again later.');
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
